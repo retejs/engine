@@ -1,0 +1,21 @@
+{
+  "name": "rete-engine",
+  "version": "2.0.0-beta.1",
+  "description": "",
+  "main": "build/engine.common.js",
+  "module": "build/engine.esm.js",
+  "types": "types",
+  "scripts": {
+    "build": "rete build -c rete.config.ts",
+    "build:dev": "rete build -c rete.config.ts --watch",
+    "prepublishOnly": "npm run build",
+    "lint": "rete lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "rete": "file:../rete/rete-2.0.0-beta.1.tgz",
+    "rete-cli": "1.0.0-beta.13",
+    "typescript": "4.8.4"
+  }
+}
