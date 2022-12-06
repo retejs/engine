@@ -13,6 +13,9 @@
   },
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "rete": "file:../rete/rete-2.0.0-beta.1.tgz"
+  },
   "devDependencies": {
     "rete": "file:../rete/rete-2.0.0-beta.1.tgz",
     "rete-cli": "1.0.0-beta.13",
