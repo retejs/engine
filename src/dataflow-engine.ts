@@ -10,13 +10,12 @@ export type DataflowEngineScheme = GetSchemes<
     ClassicScheme['Connection']
 >
 
-type CacheData = Record<string, any> | Cancellable<Record<string, any>>
 type Configure<Schemes extends DataflowEngineScheme> = (node: Schemes['Node']) => ({ inputs: string[], outputs: string[] })
 
 export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<never, [Root<Schemes>]> {
     editor!: NodeEditor<Schemes>
     dataflow!: Dataflow<Schemes>
-    cache = new Cache<NodeId, CacheData>(data => data?.cancel && data.cancel())
+    cache = new Cache<NodeId, Cancellable<Record<string, any>>>(data => data?.cancel && data.cancel())
 
     constructor(private configure?: Configure<Schemes>) {
         super('dataflow-engine')
@@ -54,12 +53,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
 
                 const cancellable = createCancellblePromise(
                     () => fetchInputs(),
-                    inputs => node.data(inputs),
-                    data => {
-                        this.cache.patch(node.id, data)
-
-                        return data
-                    }
+                    inputs => node.data(inputs)
                 )
 
                 this.cache.add(node.id, cancellable)
