@@ -2,9 +2,6 @@
   "name": "rete-engine",
   "version": "2.0.0-beta.1",
   "description": "",
-  "main": "build/engine.common.js",
-  "module": "build/engine.esm.js",
-  "types": "types",
   "scripts": {
     "build": "rete build -c rete.config.ts",
     "build:dev": "rete build -c rete.config.ts --watch",
@@ -14,11 +11,11 @@
   "author": "Vitaliy Stoliarov",
   "license": "MIT",
   "peerDependencies": {
-    "rete": "file:../rete/rete-2.0.0-beta.1.tgz"
+    "rete": "file:../rete/dist/package.tgz"
   },
   "devDependencies": {
-    "rete": "file:../rete/rete-2.0.0-beta.1.tgz",
-    "rete-cli": "^1.0.0-beta.15",
+    "rete": "file:../rete/dist/package.tgz",
+    "rete-cli": "^1.0.0-beta.18",
     "typescript": "4.8.4"
   }
 }
