@@ -9,39 +9,39 @@ export type ControlFlowNodeSetup<T extends ClassicScheme['Node'], I extends (key
 }
 
 export class ControlFlow<Schemes extends ClassicScheme> {
-    setups = new Map<NodeId, ControlFlowNodeSetup<any, any, any>>()
+  setups = new Map<NodeId, ControlFlowNodeSetup<any, any, any>>()
 
-    constructor(private editor: NodeEditor<Schemes>) { }
+  constructor(private editor: NodeEditor<Schemes>) { }
 
-    public add<T extends Schemes['Node']>(node: T, setup: ControlFlowNodeSetup<T, (keyof T['inputs'])[], (keyof T['outputs'])[]>) {
-        const affected = this.setups.get(node.id)
+  public add<T extends Schemes['Node']>(node: T, setup: ControlFlowNodeSetup<T, (keyof T['inputs'])[], (keyof T['outputs'])[]>) {
+    const affected = this.setups.get(node.id)
 
-        if (affected) {
-            throw new Error('already processed')
-        }
-        this.setups.set(node.id, setup)
+    if (affected) {
+      throw new Error('already processed')
     }
+    this.setups.set(node.id, setup)
+  }
 
-    public remove(nodeId: NodeId) {
-        this.setups.delete(nodeId)
-    }
+  public remove(nodeId: NodeId) {
+    this.setups.delete(nodeId)
+  }
 
-    public execute(nodeId: NodeId, input?: string) {
-        const setup = this.setups.get(nodeId)
+  public execute(nodeId: NodeId, input?: string) {
+    const setup = this.setups.get(nodeId)
 
-        if (!setup) throw new Error('node is not initialized')
-        if (input && !setup.inputs.includes(input)) throw new Error('inputs doesnt have a key')
+    if (!setup) throw new Error('node is not initialized')
+    if (input && !setup.inputs.includes(input)) throw new Error('inputs doesnt have a key')
 
-        setup.execute(input, (output) => {
-            if (!setup.outputs.includes(output)) throw new Error('outputs doesnt have a key')
+    setup.execute(input, (output) => {
+      if (!setup.outputs.includes(output)) throw new Error('outputs doesnt have a key')
 
-            const cons = this.editor.getConnections().filter(c => {
-                return c.source === nodeId && c.sourceOutput === output
-            })
+      const cons = this.editor.getConnections().filter(c => {
+        return c.source === nodeId && c.sourceOutput === output
+      })
 
-            cons.forEach(con => {
-                this.execute(con.target, con.targetInput)
-            })
-        })
-    }
+      cons.forEach(con => {
+        this.execute(con.target, con.targetInput)
+      })
+    })
+  }
 }
