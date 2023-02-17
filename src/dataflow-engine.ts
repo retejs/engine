@@ -5,8 +5,9 @@ import { ClassicScheme } from './types'
 import { Cache } from './utils/cache'
 import { Cancellable, createCancellblePromise } from './utils/cancellable'
 
+export type DataflowNode = { data(inputs: Record<string, any>): Promise<Record<string, any>> | Record<string, any> }
 export type DataflowEngineScheme = GetSchemes<
-    ClassicScheme['Node'] & { data(inputs: Record<string, any>): Promise<Record<string, any>> | Record<string, any> },
+    ClassicScheme['Node'] & DataflowNode,
     ClassicScheme['Connection']
 >
 
