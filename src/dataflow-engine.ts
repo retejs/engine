@@ -14,7 +14,7 @@ type Configure<Schemes extends DataflowEngineScheme> = (node: Schemes['Node']) =
 
 export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<never, [Root<Schemes>]> {
   editor!: NodeEditor<Schemes>
-  dataflow!: Dataflow<Schemes>
+  dataflow?: Dataflow<Schemes>
   cache = new Cache<NodeId, Cancellable<Record<string, any>>>(data => data?.cancel && data.cancel())
 
   constructor(private configure?: Configure<Schemes>) {
@@ -38,12 +38,17 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
     this.dataflow = new Dataflow(this.editor)
   }
 
+  private getDataflow() {
+    if (!this.dataflow) throw new Error(`DataflowEngine isn't attached to NodeEditor`)
+    return this.dataflow
+  }
+
   private add(node: Schemes['Node']) {
     const options = this.configure
       ? this.configure(node)
       : { inputs: Object.keys(node.inputs), outputs: Object.keys(node.outputs) }
 
-    this.dataflow.add(node, {
+    this.getDataflow().add(node, {
       inputs: options.inputs,
       outputs: options.outputs,
       data: async (fetchInputs) => {
@@ -64,7 +69,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
   }
 
   private remove(node: Schemes['Node']) {
-    this.dataflow.remove(node.id)
+    this.getDataflow().remove(node.id)
   }
 
   public update(nodeId: NodeId) {
@@ -78,7 +83,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
 
   public reset(nodeId?: NodeId) {
     if (nodeId) {
-      const setup = this.dataflow.setups.get(nodeId)
+      const setup = this.getDataflow().setups.get(nodeId)
 
       if (!setup) throw 'setup'
 
@@ -92,10 +97,10 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
   }
 
   public async fetchInputs(nodeId: NodeId) {
-    return this.dataflow.fetchInputs(nodeId)
+    return this.getDataflow().fetchInputs(nodeId)
   }
 
   public async fetch(nodeId: NodeId) {
-    return this.dataflow.fetch(nodeId)
+    return this.getDataflow().fetch(nodeId)
   }
 }
