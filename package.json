@@ -9,11 +9,11 @@
   "author": "Vitaliy Stoliarov",
   "license": "MIT",
   "peerDependencies": {
-    "rete": "file:../rete/dist/package.tgz"
+    "rete": "^2.0.0-beta.1"
   },
   "devDependencies": {
-    "rete": "file:../rete/dist/package.tgz",
-    "rete-cli": "^1.0.0-beta.24",
+    "rete": "^2.0.0-beta.1",
+    "rete-cli": "^1.0.0-beta.25",
     "typescript": "4.8.4"
   }
 }
