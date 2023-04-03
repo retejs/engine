@@ -7,8 +7,8 @@ Rete.js Engine
 
 ## Key features
 
-- **Dataflow**
-- **Control flow**
+- **Dataflow**: enables the flow of data between processing nodes and subsequent nodes in the data pipeline
+- **Control flow**: manages the sequence and logic of operations, including branching, loops, etc.
 
 ## Getting Started
 
