@@ -8,6 +8,21 @@
   },
   "author": "Vitaliy Stoliarov",
   "license": "MIT",
+  "keywords": [
+    "plugin",
+    "processing",
+    "engine",
+    "rete",
+    "Rete.js"
+  ],
+  "homepage": "https://retejs.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/retejs/engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/retejs/engine/issues"
+  },
   "peerDependencies": {
     "rete": "^2.0.0-beta.1"
   },
