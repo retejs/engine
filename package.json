@@ -1,6 +1,6 @@
 {
   "name": "rete-engine",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.4",
   "description": "",
   "scripts": {
     "build": "rete build -c rete.config.ts",
@@ -28,7 +28,10 @@
   },
   "devDependencies": {
     "rete": "^2.0.0-beta.1",
-    "rete-cli": "^1.0.0-beta.26",
+    "rete-cli": "^1.0.0-beta.29",
     "typescript": "4.8.4"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.21.0"
   }
 }
