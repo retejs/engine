@@ -3,8 +3,8 @@ import { NodeEditor, NodeId } from 'rete'
 import { ClassicScheme } from './types'
 
 export type ControlFlowNodeSetup<T extends ClassicScheme['Node'], I extends (keyof T['inputs'])[] = string[], O extends (keyof T['outputs'])[] = string[]> = {
-  inputs: I
-  outputs: O
+  inputs: () => I
+  outputs: () => O
   execute(input: I[number], forward: (output: O[number]) => any): any
 }
 
@@ -30,10 +30,14 @@ export class ControlFlow<Schemes extends ClassicScheme> {
     const setup = this.setups.get(nodeId)
 
     if (!setup) throw new Error('node is not initialized')
-    if (input && !setup.inputs.includes(input)) throw new Error('inputs doesnt have a key')
+    const inputKeys = setup.inputs()
+
+    if (input && !inputKeys.includes(input)) throw new Error('inputs don\'t have a key')
 
     setup.execute(input, (output) => {
-      if (!setup.outputs.includes(output)) throw new Error('outputs doesnt have a key')
+      const outputKeys = setup.outputs()
+
+      if (!outputKeys.includes(output)) throw new Error('outputs don\'t have a key')
 
       const cons = this.editor.getConnections().filter(c => {
         return c.source === nodeId && c.sourceOutput === output

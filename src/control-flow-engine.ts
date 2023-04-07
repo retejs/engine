@@ -8,7 +8,10 @@ export type ControlFlowEngineScheme = GetSchemes<
     ClassicScheme['Connection']
 >
 
-type Configure<Schemes extends ControlFlowEngineScheme> = (node: Schemes['Node']) => ({ inputs: string[], outputs: string[] })
+type Configure<Schemes extends ControlFlowEngineScheme> = (node: Schemes['Node']) => ({
+  inputs: () => string[]
+  outputs: () => string[]
+})
 
 export class ControlFlowEngine<Schemes extends ControlFlowEngineScheme> extends Scope<never, [Root<Schemes>]> {
   editor!: NodeEditor<Schemes>
@@ -38,7 +41,7 @@ export class ControlFlowEngine<Schemes extends ControlFlowEngineScheme> extends 
   private add(node: Schemes['Node']) {
     const options = this.configure
       ? this.configure(node)
-      : { inputs: Object.keys(node.inputs), outputs: Object.keys(node.outputs) }
+      : { inputs: () => Object.keys(node.inputs), outputs: () => Object.keys(node.outputs) }
 
     this.controlflow.add(node, {
       inputs: options.inputs,

@@ -7,8 +7,8 @@ export type DataflowNodeSetup<
   I extends {[key in keyof T['inputs']]: any},
   O extends {[key in keyof T['outputs']]: any}
 > = {
-  inputs: (keyof I)[]
-  outputs: (keyof O)[]
+  inputs: () => (keyof I)[]
+  outputs: () => (keyof O)[]
   data(fetchInputs: () => Promise<{[key in keyof I]: I[key][]}>): Promise<O> | O
 }
 
@@ -35,8 +35,10 @@ export class Dataflow<Schemes extends ClassicScheme> {
 
     if (!result) throw new Error('node is not initialized')
 
+    const inputKeys = result.inputs()
+
     const cons = this.editor.getConnections().filter(c => {
-      return c.target === nodeId && result.inputs.includes(c.targetInput)
+      return c.target === nodeId && inputKeys.includes(c.targetInput)
     })
 
     const inputs: Record<string, any> = {}
@@ -61,12 +63,13 @@ export class Dataflow<Schemes extends ClassicScheme> {
 
     if (!result) throw new Error('node is not initialized')
 
+    const outputKeys = result.outputs()
     const data = await result.data(() => this.fetchInputs(nodeId))
 
     const returningKeys = Object.keys(data) as (string | number | symbol)[]
 
-    if (!result.outputs.every(key => returningKeys.includes(key))) {
-      throw new Error('dataflow node doesnt return all of required properties' + nodeId)
+    if (!outputKeys.every(key => returningKeys.includes(key))) {
+      throw new Error('dataflow node doesn\'t return all of required properties' + nodeId)
     }
 
     return data

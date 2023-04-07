@@ -11,7 +11,10 @@ export type DataflowEngineScheme = GetSchemes<
     ClassicScheme['Connection']
 >
 
-type Configure<Schemes extends DataflowEngineScheme> = (node: Schemes['Node']) => ({ inputs: string[], outputs: string[] })
+type Configure<Schemes extends DataflowEngineScheme> = (node: Schemes['Node']) => ({
+  inputs: () => string[]
+  outputs: () => string[]
+})
 
 export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<never, [Root<Schemes>]> {
   editor!: NodeEditor<Schemes>
@@ -47,7 +50,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
   private add(node: Schemes['Node']) {
     const options = this.configure
       ? this.configure(node)
-      : { inputs: Object.keys(node.inputs), outputs: Object.keys(node.outputs) }
+      : { inputs: () => Object.keys(node.inputs), outputs: () => Object.keys(node.outputs) }
 
     this.getDataflow().add(node, {
       inputs: options.inputs,
@@ -73,24 +76,17 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
     this.getDataflow().remove(node.id)
   }
 
-  public update(nodeId: NodeId) {
-    const node = this.editor.getNode(nodeId)
-
-    if (!node) throw new Error('node')
-
-    this.remove(node)
-    this.add(node)
-  }
-
   public reset(nodeId?: NodeId) {
     if (nodeId) {
       const setup = this.getDataflow().setups.get(nodeId)
 
       if (!setup) throw 'setup'
 
+      const outputKeys = setup.outputs()
+
       this.cache.delete(nodeId)
       this.editor.getConnections()
-        .filter(c => c.source === nodeId && setup.outputs.includes(c.sourceOutput))
+        .filter(c => c.source === nodeId && outputKeys.includes(c.sourceOutput))
         .forEach(c => this.reset(c.target))
     } else {
       this.cache.clear()
