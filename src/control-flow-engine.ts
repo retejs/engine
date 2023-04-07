@@ -56,15 +56,6 @@ export class ControlFlowEngine<Schemes extends ControlFlowEngineScheme> extends 
     this.controlflow.remove(node.id)
   }
 
-  public update(nodeId: NodeId) {
-    const node = this.editor.getNode(nodeId)
-
-    if (!node) throw new Error('node')
-
-    this.remove(node)
-    this.add(node)
-  }
-
   public execute(nodeId: NodeId, input?: string) {
     this.controlflow.execute(nodeId, input)
   }
