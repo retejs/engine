@@ -69,7 +69,7 @@ export class Dataflow<Schemes extends ClassicScheme> {
     const returningKeys = Object.keys(data) as (string | number | symbol)[]
 
     if (!outputKeys.every(key => returningKeys.includes(key))) {
-      throw new Error('dataflow node doesn\'t return all of required properties' + nodeId)
+      throw new Error(`dataflow node "${nodeId}" doesn't return all of required properties. Expected ["${outputKeys.join('", "')}]. Got ["${returningKeys.join('", "')}"]`)
     }
 
     return data
