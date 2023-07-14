@@ -7,8 +7,8 @@ import { Cancellable, createCancellblePromise } from './utils/cancellable'
 
 export type DataflowNode = { data(inputs: Record<string, any>): Promise<Record<string, any>> | Record<string, any> }
 export type DataflowEngineScheme = GetSchemes<
-    ClassicScheme['Node'] & DataflowNode,
-    ClassicScheme['Connection']
+  ClassicScheme['Node'] & DataflowNode,
+  ClassicScheme['Connection']
 >
 
 type Configure<Schemes extends DataflowEngineScheme> = (node: Schemes['Node']) => ({
@@ -16,6 +16,13 @@ type Configure<Schemes extends DataflowEngineScheme> = (node: Schemes['Node']) =
   outputs: () => string[]
 })
 
+/**
+ * DataflowEngine is a plugin that integrates Dataflow with NodeEditor making it easy to use.
+ * Additionally, it provides a cache for the data of each node in order to avoid recurring calculations.
+ * @priority 10
+ * @listens nodecreated
+ * @listens noderemoved
+ */
 export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<never, [Root<Schemes>]> {
   editor!: NodeEditor<Schemes>
   dataflow?: Dataflow<Schemes>
@@ -76,6 +83,10 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
     this.getDataflow().remove(node.id)
   }
 
+  /**
+   * Resets the cache of the node and all its predecessors.
+   * @param nodeId Node id to reset. If not specified, all nodes will be reset.
+   */
   public reset(nodeId?: NodeId) {
     if (nodeId) {
       const setup = this.getDataflow().setups.get(nodeId)
@@ -93,10 +104,20 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
     }
   }
 
+  /**
+   * Fetches input data for the node by fetching data for all its predecessors recursively.
+   * @param nodeId Node id to fetch input data for
+   * @throws {Cancelled} when `reset` is called while fetching data
+   */
   public async fetchInputs(nodeId: NodeId) {
     return this.getDataflow().fetchInputs(nodeId)
   }
 
+  /**
+   * Fetches output data of the node
+   * @param nodeId Node id to fetch data from
+   * @throws {Cancelled} when `reset` is called while fetching data
+   */
   public async fetch(nodeId: NodeId) {
     return this.getDataflow().fetch(nodeId)
   }

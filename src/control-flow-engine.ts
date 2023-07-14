@@ -4,8 +4,8 @@ import { ControlFlow } from './control-flow'
 import { ClassicScheme } from './types'
 
 export type ControlFlowEngineScheme = GetSchemes<
-    ClassicScheme['Node'] & { execute(input: string, forward: (output: string) => void): void },
-    ClassicScheme['Connection']
+  ClassicScheme['Node'] & { execute(input: string, forward: (output: string) => void): void },
+  ClassicScheme['Connection']
 >
 
 type Configure<Schemes extends ControlFlowEngineScheme> = (node: Schemes['Node']) => ({
@@ -13,10 +13,19 @@ type Configure<Schemes extends ControlFlowEngineScheme> = (node: Schemes['Node']
   outputs: () => string[]
 })
 
+/**
+ * ControlFlowEngine is a plugin that integrates ControlFlow with NodeEditor making it easy to use
+ * @priority 9
+ * @listens nodecreated
+ * @listens noderemoved
+ */
 export class ControlFlowEngine<Schemes extends ControlFlowEngineScheme> extends Scope<never, [Root<Schemes>]> {
   editor!: NodeEditor<Schemes>
   controlflow!: ControlFlow<Schemes>
 
+  /**
+   * @param configure Allows to specify which inputs and outputs are part of the control flow
+   */
   constructor(private configure?: Configure<Schemes>) {
     super('control-flow-engine')
 
@@ -56,6 +65,11 @@ export class ControlFlowEngine<Schemes extends ControlFlowEngineScheme> extends 
     this.controlflow.remove(node.id)
   }
 
+  /**
+   * Trigger execution starting from the specified node.
+   * @param nodeId Node id
+   * @param input Input key that will be considered as the initiator of the execution
+   */
   public execute(nodeId: NodeId, input?: string) {
     this.controlflow.execute(nodeId, input)
   }
