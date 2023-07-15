@@ -107,7 +107,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
   /**
    * Fetches input data for the node by fetching data for all its predecessors recursively.
    * @param nodeId Node id to fetch input data for
-   * @throws {Cancelled} when `reset` is called while fetching data
+   * @throws `Cancelled when `reset` is called while fetching data
    */
   public async fetchInputs(nodeId: NodeId) {
     return this.getDataflow().fetchInputs(nodeId)
@@ -116,7 +116,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
   /**
    * Fetches output data of the node
    * @param nodeId Node id to fetch data from
-   * @throws {Cancelled} when `reset` is called while fetching data
+   * @throws `Cancelled` when `reset` is called while fetching data
    */
   public async fetch(nodeId: NodeId) {
     return this.getDataflow().fetch(nodeId)
