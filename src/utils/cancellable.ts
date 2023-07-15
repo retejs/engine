@@ -1,4 +1,6 @@
-
+/**
+ * Cancelled exception. Thrown when `reset` is called while fetching data.
+ */
 export class Cancelled extends Error {
   constructor() {
     super('cancelled')
