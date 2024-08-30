@@ -30,7 +30,7 @@ function createCancellblePromise(...sequence: S<any, any>[]): Cancellable<any> {
     res()
   })
 
-  const n = (sequence as S<any, any>[]).reduce((p, item) => {
+  const n = sequence.reduce((p, item) => {
     const t = p.then(item as any).then(commit)
 
     return t

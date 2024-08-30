@@ -21,7 +21,9 @@ export class Cache<Key, T> {
     const item = this.cache.get(key)
 
     this.cache.delete(key)
-    this.onDelete && this.onDelete(item)
+    if (this.onDelete) {
+      this.onDelete(item)
+    }
   }
 
   clear() {

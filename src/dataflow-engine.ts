@@ -62,7 +62,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
     this.getDataflow().add(node, {
       inputs: options.inputs,
       outputs: options.outputs,
-      data: async (fetchInputs) => {
+      data: async fetchInputs => {
         const cache = this.cache.get(node.id)
 
         if (cache) return cache
@@ -91,14 +91,16 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
     if (nodeId) {
       const setup = this.getDataflow().setups.get(nodeId)
 
-      if (!setup) throw 'setup'
+      if (!setup) throw new Error('setup')
 
       const outputKeys = setup.outputs()
 
       this.cache.delete(nodeId)
       this.editor.getConnections()
         .filter(c => c.source === nodeId && outputKeys.includes(c.sourceOutput))
-        .forEach(c => this.reset(c.target))
+        .forEach(c => {
+          this.reset(c.target)
+        })
     } else {
       this.cache.clear()
     }

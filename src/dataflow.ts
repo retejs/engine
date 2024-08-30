@@ -75,7 +75,9 @@ export class Dataflow<Schemes extends ClassicScheme> {
     }))
 
     for (const { c, sourceData } of consWithSourceData) {
-      const previous = inputs[c.targetInput] ? inputs[c.targetInput] : []
+      const previous = inputs[c.targetInput]
+        ? inputs[c.targetInput]
+        : []
 
       inputs[c.targetInput] = [...previous, sourceData[c.sourceOutput]]
     }
