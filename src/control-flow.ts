@@ -61,7 +61,7 @@ export class ControlFlow<Schemes extends ClassicScheme> {
 
     if (input && !inputKeys.includes(input)) throw new Error('inputs don\'t have a key')
 
-    setup.execute(input, (output) => {
+    setup.execute(input, output => {
       const outputKeys = setup.outputs()
 
       if (!outputKeys.includes(output)) throw new Error('outputs don\'t have a key')
