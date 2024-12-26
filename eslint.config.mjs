@@ -2,5 +2,13 @@ import tseslint from 'typescript-eslint';
 import configs from 'rete-cli/configs/eslint.mjs';
 
 export default tseslint.config(
-  ...configs
+  ...configs,
+  {
+    files: ['**/*.test.ts'],
+    rules: {
+      'eslint-disable': 'off',
+      'init-declarations': 'off',
+      'max-statements': 'off',
+    }
+  }
 )

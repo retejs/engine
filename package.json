@@ -5,6 +5,7 @@
   "scripts": {
     "build": "rete build -c rete.config.ts",
     "lint": "rete lint",
+    "test": "rete test",
     "doc": "rete doc"
   },
   "author": "Vitaliy Stoliarov",

@@ -1,4 +1,4 @@
 {
     "extends": "rete-cli/configs/tsconfig.json",
-    "include": ["src"]
+    "include": ["src", "test"]
 }
