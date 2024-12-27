@@ -29,9 +29,10 @@
     "rete": "^2.0.1"
   },
   "devDependencies": {
+    "@tsd/typescript": "^5.7.2",
+    "jest-tsd": "^0.2.2",
     "rete": "^2.0.1",
-    "rete-cli": "~2.0.1",
-    "typescript": "4.8.4"
+    "rete-cli": "~2.0.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0"
