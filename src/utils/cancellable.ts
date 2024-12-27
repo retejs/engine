@@ -34,7 +34,7 @@ function createCancellblePromise(...sequence: S<any, any>[]): Cancellable<any> {
     const t = p.then(item as any).then(commit)
 
     return t
-  }, promise)
+  }, promise) as Cancellable<any>
 
   n.cancel = () => {
     if (!cancelled) reject(new Cancelled())

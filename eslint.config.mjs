@@ -4,7 +4,7 @@ import configs from 'rete-cli/configs/eslint.mjs';
 export default tseslint.config(
   ...configs,
   {
-    files: ['**/*.test.ts'],
+    files: ['**/*.test.ts', '**/*.test-d.ts'],
     rules: {
       'eslint-disable': 'off',
       'init-declarations': 'off',

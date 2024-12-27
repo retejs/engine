@@ -12,8 +12,12 @@ export type DataflowNodeSetup<
 > = {
   inputs: () => (keyof I)[]
   outputs: () => (keyof O)[]
-  data(fetchInputs: () => Promise<{ [key in keyof I]: I[key][] }>): Promise<O> | O
+  data(fetchInputs: () => Promise<Partial<{ [key in keyof I]: I[key][] }>>): Promise<O> | O
 }
+
+type DefaultInputs = null
+type Inputs = Partial<Record<string, any[]>> | DefaultInputs
+type FetchInputs<T> = T extends DefaultInputs ? Record<string, any> : Partial<T>
 
 /**
  * Dataflow is a class that allows to process nodes in a graph using Dataflow approach.
@@ -55,7 +59,7 @@ export class Dataflow<Schemes extends ClassicScheme> {
    * @param nodeId Node id
    * @returns Object with inputs
    */
-  public async fetchInputs(nodeId: NodeId) {
+  public async fetchInputs<T extends Inputs = DefaultInputs>(nodeId: NodeId): Promise<FetchInputs<T>> {
     const result = this.setups.get(nodeId)
 
     if (!result) throw new Error('node is not initialized')
@@ -66,7 +70,7 @@ export class Dataflow<Schemes extends ClassicScheme> {
       return c.target === nodeId && inputKeys.includes(c.targetInput)
     })
 
-    const inputs: Record<string, any> = {}
+    const inputs = {} as FetchInputs<T>
     const consWithSourceData = await Promise.all(cons.map(async c => {
       return {
         c,
@@ -75,11 +79,12 @@ export class Dataflow<Schemes extends ClassicScheme> {
     }))
 
     for (const { c, sourceData } of consWithSourceData) {
-      const previous = inputs[c.targetInput]
+      const previous = (inputs[c.targetInput]
         ? inputs[c.targetInput]
-        : []
+        : [])!
+      const inputsMutation = inputs as Record<string, any[]>
 
-      inputs[c.targetInput] = [...previous, sourceData[c.sourceOutput]]
+      inputsMutation[c.targetInput] = [...previous, sourceData[c.sourceOutput]]
     }
 
     return inputs
@@ -91,7 +96,7 @@ export class Dataflow<Schemes extends ClassicScheme> {
    * @param nodeId Node id
    * @returns Object with outputs
    */
-  public async fetch(nodeId: NodeId): Promise<Record<string, any>> {
+  public async fetch<T extends Record<string, any>>(nodeId: NodeId): Promise<T> {
     const result = this.setups.get(nodeId)
 
     if (!result) throw new Error('node is not initialized')

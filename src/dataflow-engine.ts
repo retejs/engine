@@ -6,8 +6,9 @@ import { Cache } from './utils/cache'
 import { Cancellable, createCancellblePromise } from './utils/cancellable'
 
 export type DataflowNode = { data(inputs: Record<string, any>): Promise<Record<string, any>> | Record<string, any> }
+type Node = ClassicScheme['Node'] & DataflowNode
 export type DataflowEngineScheme = GetSchemes<
-  ClassicScheme['Node'] & DataflowNode,
+  Node,
   ClassicScheme['Connection']
 >
 
@@ -111,8 +112,12 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
    * @param nodeId Node id to fetch input data for
    * @throws `Cancelled when `reset` is called while fetching data
    */
-  public async fetchInputs(nodeId: NodeId) {
-    return this.getDataflow().fetchInputs(nodeId)
+  public async fetchInputs<N extends Node>(node: NodeId | N): Promise<Parameters<N['data']>[0]> {
+    const id = typeof node === 'object'
+      ? node.id
+      : node
+
+    return this.getDataflow().fetchInputs<Parameters<N['data']>[0]>(id)
   }
 
   /**
@@ -120,7 +125,11 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
    * @param nodeId Node id to fetch data from
    * @throws `Cancelled` when `reset` is called while fetching data
    */
-  public async fetch(nodeId: NodeId) {
-    return this.getDataflow().fetch(nodeId)
+  public async fetch<N extends Node>(node: NodeId | N): Promise<ReturnType<N['data']>> {
+    const id = typeof node === 'object'
+      ? node.id
+      : node
+
+    return this.getDataflow().fetch<ReturnType<N['data']>>(id)
   }
 }
