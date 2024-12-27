@@ -15,6 +15,10 @@ export type DataflowNodeSetup<
   data(fetchInputs: () => Promise<Partial<{ [key in keyof I]: I[key][] }>>): Promise<O> | O
 }
 
+type DefaultInputs = null
+type Inputs = Partial<Record<string, any[]>> | DefaultInputs
+type FetchInputs<T> = T extends DefaultInputs ? Record<string, any> : Partial<T>
+
 /**
  * Dataflow is a class that allows to process nodes in a graph using Dataflow approach.
  * @priority 8
@@ -55,7 +59,7 @@ export class Dataflow<Schemes extends ClassicScheme> {
    * @param nodeId Node id
    * @returns Object with inputs
    */
-  public async fetchInputs<T extends Partial<Record<string, any[]>>>(nodeId: NodeId): Promise<Partial<T>> {
+  public async fetchInputs<T extends Inputs = DefaultInputs>(nodeId: NodeId): Promise<FetchInputs<T>> {
     const result = this.setups.get(nodeId)
 
     if (!result) throw new Error('node is not initialized')
@@ -66,7 +70,7 @@ export class Dataflow<Schemes extends ClassicScheme> {
       return c.target === nodeId && inputKeys.includes(c.targetInput)
     })
 
-    const inputs = {} as T
+    const inputs = {} as FetchInputs<T>
     const consWithSourceData = await Promise.all(cons.map(async c => {
       return {
         c,

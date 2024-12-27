@@ -24,7 +24,7 @@ describe('Dataflow types', () => {
   it('returns default Record type for node inputs', () => {
     const node = new ClassicPreset.Node('label')
 
-    expectType<Promise<Partial<Record<string, any[]>>>>(dataflow.fetchInputs(node.id))
+    expectType<Promise<Record<string, any>>>(dataflow.fetchInputs(node.id))
   })
 
   it('accepts fetch data type as generic parameter', () => {
