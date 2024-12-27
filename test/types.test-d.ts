@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { describe, it } from '@jest/globals'
 import { expectType } from 'jest-tsd'
 import { ClassicPreset, NodeEditor } from 'rete'
@@ -33,17 +32,43 @@ describe('DataflowEngine types', () => {
     expectType<Record<string, any>>(data)
   })
 
-  it('doesnt accept node instance as argument', () => {
+  it('returns default Record type fetch inputs', async () => {
     const node1 = new Node('label1')
 
-    // @ts-expect-error
-    void dataflow.fetch(node1)
+    const data = await dataflow.fetchInputs(node1.id)
+
+    expectType<Record<string, any>>(data)
   })
 
-  it('doesnt have generic parameter for node data', () => {
+  it('returns custom type for node instance', async () => {
     const node1 = new Node('label1')
 
-    // @ts-expect-error
-    void dataflow.fetch<Node>(node1.id)
+    const data = await dataflow.fetch(node1)
+
+    expectType<{ a: string, b: string }>(data)
+  })
+
+  it('returns custom type for genetic parameter', async () => {
+    const node1 = new Node('label1')
+
+    const data = await dataflow.fetch<Node>(node1)
+
+    expectType<{ a: string, b: string }>(data)
+  })
+
+  it('returns custom type for fetch inputs', async () => {
+    const node1 = new Node('label1')
+
+    const data = await dataflow.fetchInputs(node1)
+
+    expectType<{ a?: number[], b?: boolean[] }>(data)
+  })
+
+  it('returns custom type for fetch inputs generic parameter', async () => {
+    const node1 = new Node('label1')
+
+    const data = await dataflow.fetchInputs<Node>(node1)
+
+    expectType<{ a?: number[], b?: boolean[] }>(data)
   })
 })
