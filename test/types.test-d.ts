@@ -2,7 +2,31 @@ import { describe, it } from '@jest/globals'
 import { expectType } from 'jest-tsd'
 import { ClassicPreset, NodeEditor } from 'rete'
 
+import { Dataflow } from '../src/dataflow'
 import { DataflowEngine, DataflowEngineScheme, DataflowNode } from '../src/dataflow-engine'
+import { ClassicScheme } from '../src/types'
+
+describe('Dataflow types', () => {
+  let editor!: NodeEditor<ClassicScheme>
+  let dataflow: Dataflow<ClassicScheme>
+
+  beforeEach(() => {
+    editor = new NodeEditor<ClassicScheme>()
+    dataflow = new Dataflow(editor)
+  })
+
+  it('accepts fetch data type as generic parameter', () => {
+    const node = new ClassicPreset.Node('label')
+
+    expectType<Promise<{ a: string }>>(dataflow.fetch<{ a: string }>(node.id))
+  })
+
+  it('accepts inputs data type as generic parameter', () => {
+    const node = new ClassicPreset.Node('label')
+
+    expectType<Promise<{ a?: string[] }>>(dataflow.fetchInputs<{ a: string[] }>(node.id))
+  })
+})
 
 class Node extends ClassicPreset.Node implements DataflowNode {
   data(inputs: { a?: number[], b?: boolean[] }) {

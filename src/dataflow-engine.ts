@@ -117,7 +117,7 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
       ? node.id
       : node
 
-    return this.getDataflow().fetchInputs(id) as Promise<Parameters<N['data']>[0]>
+    return this.getDataflow().fetchInputs<Parameters<N['data']>[0]>(id)
   }
 
   /**
@@ -130,6 +130,6 @@ export class DataflowEngine<Schemes extends DataflowEngineScheme> extends Scope<
       ? node.id
       : node
 
-    return this.getDataflow().fetch(id) as ReturnType<N['data']>
+    return this.getDataflow().fetch<ReturnType<N['data']>>(id)
   }
 }
