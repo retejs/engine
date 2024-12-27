@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/retejs/engine/compare/v2.1.0...v2.1.1) (2024-12-27)
+
+
+### Bug Fixes
+
+* **build:** d.ts ([b81dd00](https://github.com/retejs/engine/commit/b81dd00ab2af9b83e22fbae628497322c7f31fc6))
+
 # [2.1.0](https://github.com/retejs/engine/compare/v2.0.2...v2.1.0) (2024-12-27)
 
 
