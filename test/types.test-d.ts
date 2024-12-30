@@ -1,42 +1,36 @@
-import { describe, it } from '@jest/globals'
-import { expectType } from 'jest-tsd'
 import { ClassicPreset, NodeEditor } from 'rete'
+import { describe, expect, it } from 'tstyche'
 
 import { Dataflow } from '../src/dataflow'
 import { DataflowEngine, DataflowEngineScheme, DataflowNode } from '../src/dataflow-engine'
 import { ClassicScheme } from '../src/types'
 
 describe('Dataflow types', () => {
-  let editor!: NodeEditor<ClassicScheme>
-  let dataflow: Dataflow<ClassicScheme>
-
-  beforeEach(() => {
-    editor = new NodeEditor<ClassicScheme>()
-    dataflow = new Dataflow(editor)
-  })
+  const editor = new NodeEditor<ClassicScheme>()
+  const dataflow = new Dataflow(editor)
 
   it('returns default Record type for node data', () => {
     const node = new ClassicPreset.Node('label')
 
-    expectType<Promise<Record<string, any>>>(dataflow.fetch(node.id))
+    expect(dataflow.fetch(node.id)).type.toBe<Promise<Record<string, any>>>()
   })
 
   it('returns default Record type for node inputs', () => {
     const node = new ClassicPreset.Node('label')
 
-    expectType<Promise<Record<string, any>>>(dataflow.fetchInputs(node.id))
+    expect(dataflow.fetchInputs(node.id)).type.toBe<Promise<Record<string, any>>>()
   })
 
   it('accepts fetch data type as generic parameter', () => {
     const node = new ClassicPreset.Node('label')
 
-    expectType<Promise<{ a: string }>>(dataflow.fetch<{ a: string }>(node.id))
+    expect(dataflow.fetch<{ a: string }>(node.id)).type.toBe<Promise<{ a: string }>>()
   })
 
   it('accepts inputs data type as generic parameter', () => {
     const node = new ClassicPreset.Node('label')
 
-    expectType<Promise<{ a?: string[] }>>(dataflow.fetchInputs<{ a: string[] }>(node.id))
+    expect(dataflow.fetchInputs<{ a: string[] }>(node.id)).type.toBe<Promise<{ a?: string[] }>>()
   })
 })
 
@@ -50,22 +44,17 @@ class Node extends ClassicPreset.Node implements DataflowNode {
 }
 
 describe('DataflowEngine types', () => {
-  let editor!: NodeEditor<DataflowEngineScheme>
-  let dataflow: DataflowEngine<DataflowEngineScheme>
+  const editor = new NodeEditor<DataflowEngineScheme>()
+  const dataflow = new DataflowEngine()
 
-  beforeEach(() => {
-    editor = new NodeEditor<DataflowEngineScheme>()
-    dataflow = new DataflowEngine()
-
-    editor.use(dataflow)
-  })
+  editor.use(dataflow)
 
   it('returns default Record type for node data', async () => {
     const node1 = new Node('label1')
 
     const data = await dataflow.fetch(node1.id)
 
-    expectType<Record<string, any>>(data)
+    expect(data).type.toBe<Record<string, any>>()
   })
 
   it('returns default Record type fetch inputs', async () => {
@@ -73,7 +62,7 @@ describe('DataflowEngine types', () => {
 
     const data = await dataflow.fetchInputs(node1.id)
 
-    expectType<Record<string, any>>(data)
+    expect(data).type.toBe<Record<string, any>>()
   })
 
   it('returns custom type for node instance', async () => {
@@ -81,7 +70,7 @@ describe('DataflowEngine types', () => {
 
     const data = await dataflow.fetch(node1)
 
-    expectType<{ a: string, b: string }>(data)
+    expect(data).type.toBe<{ a: string, b: string }>()
   })
 
   it('returns custom type for genetic parameter', async () => {
@@ -89,7 +78,7 @@ describe('DataflowEngine types', () => {
 
     const data = await dataflow.fetch<Node>(node1)
 
-    expectType<{ a: string, b: string }>(data)
+    expect(data).type.toBe<{ a: string, b: string }>()
   })
 
   it('returns custom type for fetch inputs', async () => {
@@ -97,7 +86,7 @@ describe('DataflowEngine types', () => {
 
     const data = await dataflow.fetchInputs(node1)
 
-    expectType<{ a?: number[], b?: boolean[] }>(data)
+    expect(data).type.toBe<{ a?: number[], b?: boolean[] }>()
   })
 
   it('returns custom type for fetch inputs generic parameter', async () => {
@@ -105,6 +94,6 @@ describe('DataflowEngine types', () => {
 
     const data = await dataflow.fetchInputs<Node>(node1)
 
-    expectType<{ a?: number[], b?: boolean[] }>(data)
+    expect(data).type.toBe<{ a?: number[], b?: boolean[] }>()
   })
 })
